@@ -36,11 +36,5 @@ steps:
   displayName: 'pytest'
 
 - script: |
-      python -m venv env
-      source env/bin/activate
-      pip install -r requirements.txt
-    displayName: 'Install Dependencies'
-
-- script: |
       python -m unittest discover
     displayName: 'Run Tests'
