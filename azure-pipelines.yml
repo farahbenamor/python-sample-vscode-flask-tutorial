@@ -19,12 +19,6 @@ strategy:
     Python37:
       python.version: '3.7'
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
-
 
 jobs:
 - job: BuildAndTest
@@ -55,6 +49,14 @@ jobs:
       command: 'install'
       arguments: 'my-release my-helm-repo/my-chart'
     displayName: 'Install My Chart'
+
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(python.version)'
+  displayName: 'Use Python $(python.version)'
+
 
 - script: |
     python -m pip install --upgrade pip
