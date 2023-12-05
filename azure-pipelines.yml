@@ -25,6 +25,37 @@ steps:
     versionSpec: '$(python.version)'
   displayName: 'Use Python $(python.version)'
 
+
+jobs:
+- job: BuildAndTest
+  displayName: 'Build and Test'
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '14.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      npm install
+      npm test
+    displayName: 'Install Dependencies and Run Tests'
+
+- job: DeployToKubernetes
+  displayName: 'Deploy to Kubernetes'
+  dependsOn: BuildAndTest
+  steps:
+  - task: UseHelm@0
+    inputs:
+      command: 'repo'
+      arguments: 'add my-helm-repo $(Build.SourcesDirectory)/helm-charts'
+    displayName: 'Add Helm Repository'
+
+  - task: UseHelm@0
+    inputs:
+      command: 'install'
+      arguments: 'my-release my-helm-repo/my-chart'
+    displayName: 'Install My Chart'
+
 - script: |
     python -m pip install --upgrade pip
     pip install -r requirements.txt
