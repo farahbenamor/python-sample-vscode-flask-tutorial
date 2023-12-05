@@ -19,38 +19,6 @@ strategy:
     Python37:
       python.version: '3.7'
 
-
-jobs:
-- job: BuildAndTest
-  displayName: 'Build and Test'
-  steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '14.x'
-    displayName: 'Install Node.js'
-
-  - script: |
-      npm install
-      npm test
-    displayName: 'Install Dependencies and Run Tests'
-
-- job: DeployToKubernetes
-  displayName: 'Deploy to Kubernetes'
-  dependsOn: BuildAndTest
-  steps:
-  - task: UseHelm@0
-    inputs:
-      command: 'repo'
-      arguments: 'add my-helm-repo $(Build.SourcesDirectory)/helm-charts'
-    displayName: 'Add Helm Repository'
-
-  - task: UseHelm@0
-    inputs:
-      command: 'install'
-      arguments: 'my-release my-helm-repo/my-chart'
-    displayName: 'Install My Chart'
-
-
 steps:
 - task: UsePythonVersion@0
   inputs:
@@ -67,3 +35,13 @@ steps:
     pip install pytest pytest-azurepipelines
     pytest
   displayName: 'pytest'
+
+- script: |
+      python -m venv env
+      source env/bin/activate
+      pip install -r requirements.txt
+    displayName: 'Install Dependencies'
+
+  - script: |
+      python -m unittest discover
+    displayName: 'Run Tests'
