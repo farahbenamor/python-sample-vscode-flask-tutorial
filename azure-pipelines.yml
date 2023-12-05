@@ -34,7 +34,3 @@ steps:
     pip install pytest pytest-azurepipelines
     pytest
   displayName: 'pytest'
-
-- script: |
-      python -m unittest discover
-    displayName: 'Run Tests'
